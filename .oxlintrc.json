@@ -1,0 +1,23 @@
+{
+    "env": {
+        "node": true,
+        "es2024": true
+    },
+    "settings": {},
+    "rules": {
+        "eqeqeq": "error",
+        "import/no-cycle": "error",
+        "no-explicit-any": "error",
+        "no-var": "error",
+        "no-await-in-loop": "error",
+        "default-case-last": "error",
+        "default-case": "error",
+        "no-empty": "error",
+        "no-empty-function": "error",
+        "no-dynamic-delete": "error",
+        "no-non-null-assertion": "error",
+        "no-nested-ternary": "error",
+        "no-throw-literal": "error",
+        "ban-types": "error"
+    }
+}

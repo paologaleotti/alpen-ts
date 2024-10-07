@@ -1,0 +1,15 @@
+{
+    "name": "@packages/api",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "scripts": {
+        "typecheck": "tsc",
+        "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js"
+    },
+    "dependencies": {
+        "@hono/node-server": "^1.13.1",
+        "hono": "^4.6.3",
+        "common": "workspace:*"
+    }
+}
