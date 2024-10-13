@@ -1,6 +1,6 @@
 # alpen
 
-prototype new TS backend
+codename "alpen": prototype TS backend stack
 
 todo:
 
