@@ -5,7 +5,8 @@
     "private": true,
     "scripts": {
         "typecheck": "tsc",
-        "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js"
+        "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js",
+        "start": "node dist/main.js"
     },
     "dependencies": {
         "@hono/node-server": "^1.13.1",
