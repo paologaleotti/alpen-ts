@@ -1,7 +1,7 @@
 import { Context } from "hono"
 import { HTTPResponseError } from "hono/types"
 import { validator } from "hono/validator"
-import { ZodSchema } from "zod"
+import { z, ZodSchema } from "zod"
 import { fromError } from "zod-validation-error"
 
 /**
@@ -10,8 +10,7 @@ import { fromError } from "zod-validation-error"
  * with a 400 error if it is invalid.
  */
 export function validatePayload<T extends ZodSchema>(schema: T) {
-    // https://hono.dev/docs/guides/validation
-    return validator("json", (value, c) => {
+    return validator("json", (value, c): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
         if (!parsed.success) {
             const message = fromError(parsed.error).toString()
