@@ -1,6 +1,6 @@
 # alpen
 
-codename "alpen": prototype TS backend stack
+codename "alpen": prototype for a modern TS backend stack based on [Hono](https://hono.dev/) and [zod](https://zod.dev/)
 
 todo:
 
