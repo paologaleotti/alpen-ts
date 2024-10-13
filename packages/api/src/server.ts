@@ -1,8 +1,7 @@
-import { recoverPanic } from "@/common/http/utils"
+import { loggerMiddleware, recoverPanic } from "@/common/http/utils"
 import { buildDbInstance } from "@/common/storage/db-config"
 import { TodoStoragePg } from "@/common/storage/todo/todo-storage-impl"
 import { Hono } from "hono"
-import { logger } from "hono/logger"
 import { buildTodoRouter } from "./routers/todo-router"
 import { TodoService } from "./services/todo-service"
 
@@ -23,7 +22,7 @@ export function buildServer() {
 
     const todoRouter = buildTodoRouter(todoService)
 
-    app.use(logger()) // TODO proper logger
+    app.use(loggerMiddleware)
     app.onError(recoverPanic)
 
     app.route("/", todoRouter)

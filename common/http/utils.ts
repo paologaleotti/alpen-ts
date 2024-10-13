@@ -1,8 +1,10 @@
 import { Context } from "hono"
+import { createMiddleware } from "hono/factory"
 import { HTTPResponseError } from "hono/types"
 import { validator } from "hono/validator"
 import { z, ZodSchema } from "zod"
 import { fromError } from "zod-validation-error"
+import { logger } from "../logger"
 
 /**
  * `validatePayload` accepts a Zod schema,
@@ -27,3 +29,26 @@ export function validatePayload<T extends ZodSchema>(schema: T) {
 export function recoverPanic(err: Error | HTTPResponseError, c: Context) {
     return c.text(`${err}`, 500) // TODO proper error types!!
 }
+
+/**
+ * `loggerMiddleware` is a Hono middleware that logs the request method, status, path and duration
+ * of the request in milliseconds.
+ */
+export const loggerMiddleware = createMiddleware(async (c, next) => {
+    const start = Date.now()
+
+    logger.info("request", {
+        method: c.req.method,
+        path: c.req.path
+    })
+
+    await next()
+    const ms = Date.now() - start
+
+    logger.log(c.res.status < 400 ? "info" : "error", "response", {
+        method: c.req.method,
+        path: c.req.path,
+        status: c.res.status,
+        ms: ms
+    })
+})

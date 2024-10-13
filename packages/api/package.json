@@ -6,7 +6,7 @@
     "scripts": {
         "typecheck": "tsc",
         "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js",
-        "start": "node dist/main.js"
+        "start": "pnpm build && node dist/main.js"
     },
     "dependencies": {
         "common": "workspace:*"
