@@ -20,6 +20,9 @@
         "typescript-eslint": "^8.8.1"
     },
     "dependencies": {
-        "zod": "^3.23.8"
+        "@hono/node-server": "^1.13.1",
+        "hono": "^4.6.3",
+        "zod": "^3.23.8",
+        "zod-validation-error": "^3.4.0"
     }
 }

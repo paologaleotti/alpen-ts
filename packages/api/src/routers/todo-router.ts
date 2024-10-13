@@ -1,8 +1,8 @@
+import { validatePayload } from "@/common/http/utils"
 import { newTodoSchema } from "@/common/models/todo-models"
 import { Hono } from "hono"
-import { validator } from "hono/validator"
-import { ZodSchema } from "zod"
 import { TodoService } from "../services/todo-service"
+
 // TODO parse response with zod
 
 export function buildTodoRouter(service: TodoService) {
@@ -10,13 +10,14 @@ export function buildTodoRouter(service: TodoService) {
 
     router.get("/todos", async (c) => {
         const todos = await service.getTodos()
-        c.json(todos)
+        return c.json(todos)
     })
 
     router.get("/todos/:id", async (c) => {
         const { id } = c.req.param()
         const todo = await service.getTodo(id)
-        c.json(todo)
+
+        return c.json(todo)
     })
 
     router.post("/todos", validatePayload(newTodoSchema), async (c) => {
@@ -25,18 +26,8 @@ export function buildTodoRouter(service: TodoService) {
             title: newTodo.title
         })
 
-        return c.status(201)
+        return c.body(null, 204)
     })
 
     return router
-}
-
-function validatePayload<T extends ZodSchema>(schema: T) {
-    return validator("json", (value, c) => {
-        const parsed = schema.safeParse(value)
-        if (!parsed.success) {
-            return c.text("Invalid!", 401)
-        }
-        return parsed.data
-    })
 }
