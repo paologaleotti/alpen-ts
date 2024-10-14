@@ -23,6 +23,7 @@
     "dependencies": {
         "@hono/node-server": "^1.13.1",
         "hono": "^4.6.3",
+        "ts-pattern": "^5.5.0",
         "winston": "^3.15.0",
         "zod": "^3.23.8",
         "zod-validation-error": "^3.4.0"

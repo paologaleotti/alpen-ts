@@ -7,8 +7,7 @@ from developer experience to API testing and cloud deployment.
 
 todo:
 
--   error handling
+-   improve error handling
 -   infra
 -   parse response
 -   oapi first? oapi to zod generation?
--   middlewares

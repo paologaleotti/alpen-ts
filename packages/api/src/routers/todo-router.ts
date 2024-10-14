@@ -1,9 +1,10 @@
+import { HttpStatus } from "@/common/http/types"
 import { validatePayload } from "@/common/http/utils"
 import { newTodoSchema } from "@/common/models/todo-models"
 import { Hono } from "hono"
 import { TodoService } from "../services/todo-service"
 
-// TODO parse response with zod
+// TODO parse response with zod ??
 
 export function buildTodoRouter(service: TodoService) {
     const router = new Hono()
@@ -26,7 +27,7 @@ export function buildTodoRouter(service: TodoService) {
             title: newTodo.title
         })
 
-        return c.body(null, 204)
+        return c.body(null, HttpStatus.NoContent)
     })
 
     return router
