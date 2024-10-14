@@ -35,6 +35,7 @@ export function buildServer() {
 }
 
 const envSchema = z.object({
+    NODE_ENV: z.enum(["development", "production"]).default("development"),
     PG_HOST: z.string().default("localhost"),
     PG_USER: z.string().default("postgres"),
     PG_PASSWORD: z.string().default("postgres"),
