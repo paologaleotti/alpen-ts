@@ -33,13 +33,14 @@ export class TodoStoragePg implements TodoStorage {
             .where("id", "=", id)
             .executeTakeFirst()
 
-        return result
-            ? {
-                  completed: result.is_completed,
-                  id: result.id,
-                  title: result.title
-              }
-            : null
+        if (!result) {
+            return null
+        }
+        return {
+            completed: result.is_completed,
+            id: result.id,
+            title: result.title
+        }
     }
 
     public async deleteTodo(id: string): Promise<void> {
