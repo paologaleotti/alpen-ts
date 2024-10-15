@@ -16,24 +16,27 @@ import { ApiError, HttpStatus } from "./types"
 export function validatePayload<T extends ZodSchema>(schema: T) {
     return validator("json", (value, c): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
-        if (!parsed.success) {
-            const message = fromError(parsed.error).toString()
-            return c.json<ApiError>(
-                {
-                    code: "InvalidRequest",
-                    message,
-                    status: HttpStatus.BadRequest
-                },
-                HttpStatus.BadRequest
-            )
+        if (parsed.success) {
+            return parsed.data
         }
-        return parsed.data
+
+        const message = fromError(parsed.error).toString()
+        return c.json<ApiError>(
+            {
+                code: "InvalidRequest",
+                message,
+                status: HttpStatus.BadRequest
+            },
+            HttpStatus.BadRequest
+        )
     })
 }
 
 /**
  * `handleErrors` catches unhandled exceptions and
- * renders them to the client using the provided status mapper
+ * renders them to the client using the provided status mapper.
+ * If the error is unkown, it will log the error and return a 500 status by default.
+ * The stack trace is only returned in dev environment.
  */
 export function handleErrors<T extends string>(
     mapper: (err: ServiceError<T>) => HttpStatus
@@ -51,11 +54,13 @@ export function handleErrors<T extends string>(
             )
         }
 
+        logger.error("Unhandled error", err)
         return c.json<ApiError>(
             {
                 code: "UnkownError",
-                message: err.message,
-                status: HttpStatus.InternalError
+                message: `${err.name}: ${err.message}`,
+                status: HttpStatus.InternalError,
+                stack: process.env.NODE_ENV !== "production" ? err.stack : undefined
             },
             HttpStatus.InternalError
         )

@@ -14,4 +14,5 @@ export type ApiError = {
     code: string
     message: string
     status: HttpStatus
+    stack?: string
 }
