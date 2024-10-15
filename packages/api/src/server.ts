@@ -1,12 +1,12 @@
 import { HttpStatus } from "@/common/http/types"
-import { handleErrors, loggerMiddleware } from "@/common/http/utils"
+import { handleErrors, handleRouteNotFound, loggerMiddleware } from "@/common/http/utils"
 import { buildDbInstance } from "@/common/storage/db-config"
 import { TodoStoragePg } from "@/common/storage/todo/todo-storage-impl"
-import { ServiceError } from "@/common/utils/errors"
+import { ApplicationError } from "@/common/utils/app-error"
 import { Hono } from "hono"
 import { match } from "ts-pattern"
 import z from "zod"
-import { ErrorCodes } from "./errors"
+import { AllErrors } from "./errors"
 import { buildTodoRouter } from "./routers/todo-router"
 import { TodoService } from "./services/todo-service"
 
@@ -29,6 +29,7 @@ export function buildServer() {
     const todoRouter = buildTodoRouter(todoService)
 
     app.use(loggerMiddleware)
+    app.notFound(handleRouteNotFound)
     app.onError(handleErrors(mapErrorStatus))
 
     app.route("/", todoRouter)
@@ -36,12 +37,13 @@ export function buildServer() {
     return app
 }
 
-const mapErrorStatus = (err: ServiceError<ErrorCodes>): HttpStatus =>
+const mapErrorStatus = (err: ApplicationError<AllErrors>): HttpStatus =>
     match(err.code)
-        .with("ForbiddenAction", () => HttpStatus.Forbidden)
-        .with("ItemNotFound", () => HttpStatus.NotFound)
-        .with("TodoAlreadyExists", () => HttpStatus.Conflict)
         .with("GenericError", () => HttpStatus.InternalError)
+        .with("InvalidRequest", () => HttpStatus.BadRequest)
+        .with("RouteNotFound", "ItemNotFound", () => HttpStatus.NotFound)
+        .with("ForbiddenAction", () => HttpStatus.Forbidden)
+        .with("TodoAlreadyExists", () => HttpStatus.Conflict)
         .exhaustive()
 
 const envSchema = z.object({

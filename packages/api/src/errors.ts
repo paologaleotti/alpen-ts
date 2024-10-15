@@ -1,14 +1,17 @@
-import { ServiceError } from "@/common/utils/errors"
+import { ServerErrors } from "@/common/http/errors"
+import { ApplicationError } from "@/common/utils/app-error"
 
-export type ErrorCodes =
+export type AllErrors = ServiceErrors | ServerErrors
+
+export type ServiceErrors =
     | "GenericError"
     | "ForbiddenAction"
     | "ItemNotFound"
-    | "TodoAlreadyExists"
+    | "TodoAlreadyExists" // example of a custom error code
 
 export function serviceError(
-    code: ErrorCodes,
+    code: ServiceErrors,
     message: string
-): ServiceError<ErrorCodes> {
-    return new ServiceError(code, message)
+): ApplicationError<ServiceErrors> {
+    return new ApplicationError(code, message)
 }

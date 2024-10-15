@@ -4,8 +4,9 @@ import { HTTPResponseError } from "hono/types"
 import { validator } from "hono/validator"
 import { z, ZodSchema } from "zod"
 import { fromError } from "zod-validation-error"
-import { ServiceError } from "../utils/errors"
+import { ApplicationError } from "../utils/app-error"
 import { logger } from "../utils/logger"
+import { serverError } from "./errors"
 import { ApiError, HttpStatus } from "./types"
 
 /**
@@ -14,57 +15,15 @@ import { ApiError, HttpStatus } from "./types"
  * with a Bad Request error if it is invalid.
  */
 export function validatePayload<T extends ZodSchema>(schema: T) {
-    return validator("json", (value, c): z.infer<T> | Response => {
+    return validator("json", (value): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
         if (parsed.success) {
             return parsed.data
         }
 
         const message = fromError(parsed.error).toString()
-        return c.json<ApiError>(
-            {
-                code: "InvalidRequest",
-                message,
-                status: HttpStatus.BadRequest
-            },
-            HttpStatus.BadRequest
-        )
+        throw serverError("InvalidRequest", message)
     })
-}
-
-/**
- * `handleErrors` catches unhandled exceptions and
- * renders them to the client using the provided status mapper.
- * If the error is unkown, it will log the error and return a 500 status by default.
- * The stack trace is only returned in dev environment.
- */
-export function handleErrors<T extends string>(
-    mapper: (err: ServiceError<T>) => HttpStatus
-) {
-    return (err: Error | HTTPResponseError, c: Context) => {
-        if (err instanceof ServiceError) {
-            const status = mapper(err)
-            return c.json<ApiError>(
-                {
-                    code: err.code,
-                    message: err.message,
-                    status
-                },
-                status
-            )
-        }
-
-        logger.error("Unhandled error", err)
-        return c.json<ApiError>(
-            {
-                code: "UnkownError",
-                message: `${err.name}: ${err.message}`,
-                status: HttpStatus.InternalError,
-                stack: process.env.NODE_ENV !== "production" ? err.stack : undefined
-            },
-            HttpStatus.InternalError
-        )
-    }
 }
 
 /**
@@ -92,3 +51,42 @@ export const loggerMiddleware = createMiddleware(async (c, next) => {
         reqId
     })
 })
+
+export const handleRouteNotFound = () => {
+    throw serverError("RouteNotFound", "The requested route is invalid or not mounted")
+}
+
+/**
+ * `handleErrors` catches unhandled exceptions and
+ * renders them to the client using the provided status mapper.
+ * If the error is unkown, it will log the error and return a 500 status by default.
+ * The stack trace is only returned in dev environment.
+ */
+export function handleErrors<T extends string>(
+    mapper: (err: ApplicationError<T>) => HttpStatus
+) {
+    return (err: Error | HTTPResponseError, c: Context) => {
+        if (err instanceof ApplicationError) {
+            const status = mapper(err)
+            return c.json<ApiError>(
+                {
+                    code: err.code,
+                    message: err.message,
+                    status
+                },
+                status
+            )
+        }
+
+        logger.error("Unhandled error", err)
+        return c.json<ApiError>(
+            {
+                code: "UnkownError",
+                message: `${err.name}: ${err.message}`,
+                status: HttpStatus.InternalError,
+                stack: process.env.NODE_ENV !== "production" ? err.stack : undefined
+            },
+            HttpStatus.InternalError
+        )
+    }
+}
