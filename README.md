@@ -18,6 +18,7 @@ Features:
 -   Modular monolith structure + monorepo
 -   No implicit behavior, no dependency injection
 -   Safe error handling between services and API
+-   Single abstraction layer between API and business logic
 
 todo:
 
