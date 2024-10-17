@@ -21,6 +21,7 @@
         "noEmit": true,
         "alwaysStrict": true,
         "noFallthroughCasesInSwitch": true,
+        "pretty": true,
         "paths": {
             "@/common/*": [
                 "./common/*"
