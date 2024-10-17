@@ -1,5 +1,5 @@
 import { HttpStatus } from "@/common/http/types"
-import { validatePayload } from "@/common/http/utils"
+import { validateBody } from "@/common/http/utils"
 import { newTodoSchema } from "@/common/models/todo-models"
 import { Hono } from "hono"
 import { TodoService } from "../services/todo-service"
@@ -21,7 +21,7 @@ export function buildTodoRouter(service: TodoService) {
         return c.json(todo)
     })
 
-    router.post("/todos", validatePayload(newTodoSchema), async (c) => {
+    router.post("/todos", validateBody(newTodoSchema), async (c) => {
         const newTodo = c.req.valid("json")
         await service.createTodo({
             title: newTodo.title

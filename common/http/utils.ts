@@ -10,11 +10,11 @@ import { serverError } from "./errors"
 import { ApiError, HttpStatus } from "./types"
 
 /**
- * `validatePayload` accepts a Zod schema,
+ * `validateBody` accepts a Zod schema,
  * parses it against the JSON body and replies
  * with a Bad Request error if it is invalid.
  */
-export function validatePayload<T extends ZodSchema>(schema: T) {
+export function validateBody<T extends ZodSchema>(schema: T) {
     return validator("json", (value): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
         if (parsed.success) {
@@ -22,7 +22,24 @@ export function validatePayload<T extends ZodSchema>(schema: T) {
         }
 
         const message = fromError(parsed.error).toString()
-        throw serverError("InvalidRequest", message)
+        throw serverError("InvalidRequest", `Invalid body. ${message}`)
+    })
+}
+
+/**
+ * `validateQuery` accepts a Zod schema,
+ * parses it against the query parameters and replies
+ * with a Bad Request error if it is invalid.
+ */
+export function validateQuery<T extends ZodSchema>(schema: T) {
+    return validator("query", (value): z.infer<T> | Response => {
+        const parsed = schema.safeParse(value)
+        if (parsed.success) {
+            return parsed.data
+        }
+
+        const message = fromError(parsed.error).toString()
+        throw serverError("InvalidRequest", `Invalid query params. ${message}`)
     })
 }
 
