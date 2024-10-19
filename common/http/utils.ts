@@ -15,6 +15,7 @@ import { ApiError, HttpStatus } from "./types"
  * with a Bad Request error if it is invalid.
  */
 export function validateBody<T extends ZodSchema>(schema: T) {
+    // https://hono.dev/docs/guides/validation
     return validator("json", (value): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
         if (parsed.success) {
@@ -32,6 +33,7 @@ export function validateBody<T extends ZodSchema>(schema: T) {
  * with a Bad Request error if it is invalid.
  */
 export function validateQuery<T extends ZodSchema>(schema: T) {
+    // https://hono.dev/docs/guides/validation
     return validator("query", (value): z.infer<T> | Response => {
         const parsed = schema.safeParse(value)
         if (parsed.success) {

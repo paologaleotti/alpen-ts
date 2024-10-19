@@ -6,7 +6,8 @@
     "scripts": {
         "typecheck": "tsc",
         "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js",
-        "dev": "concurrently --prefixColors auto --names \"tsc,esbuild,app\"  \"tsc --watch\"  \"pnpm build --watch\" \"node --watch dist/main.js\""
+        "dev": "concurrently --prefixColors auto --names \"tsc,esbuild,app\"  \"tsc --watch\"  \"pnpm build --watch\" \"node --watch dist/main.js\"",
+        "start": "node dist/main.js"
     },
     "dependencies": {
         "common": "workspace:*"
