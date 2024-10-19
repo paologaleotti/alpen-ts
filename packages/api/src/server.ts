@@ -19,7 +19,7 @@ export function buildServer() {
         user: env.PG_USER,
         database: env.PG_DATABASE,
         password: env.PG_PASSWORD,
-        port: env.PG_PORT,
+        port: Number(env.PG_PORT),
         max: 10
     })
 
@@ -52,5 +52,5 @@ const envSchema = z.object({
     PG_USER: z.string().default("postgres"),
     PG_PASSWORD: z.string().default("postgres"),
     PG_DATABASE: z.string().default("postgres"),
-    PG_PORT: z.number().default(5432)
+    PG_PORT: z.string().default("5432")
 })

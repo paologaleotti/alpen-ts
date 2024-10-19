@@ -26,4 +26,25 @@ todo:
 -   infra
 -   parse response
 -   oapi first? oapi to zod generation?
--   sql migration
+
+## Try it
+
+Requirements:
+
+-   **pnpm** (you can use node's build in `corepack` to manage pnpm versions)
+-   **Node** >= 20
+
+```bash
+pnpm i
+pnpm dev:api # start in hot-reload mode
+```
+
+To test with a local Postgres database:
+
+-   **goose** (migration tool)
+-   **Docker**
+
+```bash
+pnpm infra:up
+pnpm migrate:up
+```
