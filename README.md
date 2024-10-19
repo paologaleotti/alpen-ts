@@ -22,10 +22,10 @@ Features:
 
 todo:
 
--   improve error handling ?
 -   infra
 -   parse response
 -   oapi first? oapi to zod generation?
+-   CI/CD
 
 ## Try it
 
