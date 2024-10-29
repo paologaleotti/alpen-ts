@@ -22,6 +22,7 @@ Features:
 
 todo:
 
+-   db and migrations (drizzle...? right now using kysely and it is typesafe!)
 -   infra
 -   parse response
 -   oapi first? oapi to zod generation?
