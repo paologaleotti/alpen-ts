@@ -46,8 +46,7 @@ export function validateQuery<T extends ZodSchema>(schema: T) {
 }
 
 /**
- * `loggerMiddleware` is a Hono middleware that logs the request method, status, path and duration
- * of the request in milliseconds.
+ * `loggerMiddleware` is a Hono middleware that logs the request method, status, path and duration of the request in milliseconds.
  */
 export const loggerMiddleware = createMiddleware(async (c, next) => {
     const start = Date.now()
@@ -78,7 +77,7 @@ export const handleRouteNotFound = () => {
 /**
  * `handleErrors` catches unhandled exceptions and
  * renders them to the client using the provided status mapper.
- * If the error is unkown, it will log the error and return a 500 status by default.
+ * If the error is unknown, it will log the error and return a 500 status by default.
  * The stack trace is only returned in dev environment.
  */
 export function handleErrors<T extends string>(
